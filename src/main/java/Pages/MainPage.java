@@ -167,10 +167,7 @@ public class MainPage extends BasePage {
         wait.until(ExpectedConditions.presenceOfElementLocated(with(By.xpath("//span")).toRightOf(findElementByXpath(YOUR_CART_PAGE_XPATH)))).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("/html/body/ul[2]/li[" + currencyXpath + "]"))).click();
 
-       if(elementExistsByXpath("/html/body/ul[2]/li[" + currencyXpath + "]") && elementExistsByXpath("//span[@class = 'cbb-price-code' and text()='" + actualCurrency + "']")) {
-           return true;
-       }
-       return false;
+        return elementExistsByXpath("/html/body/ul[2]/li[" + currencyXpath + "]") && elementExistsByXpath("//span[@class = 'cbb-price-code' and text()='" + actualCurrency + "']");
     }
 
     public void captureLogo() throws IOException {
