@@ -9,7 +9,7 @@ public class UseCaseBase {
 
     private static WebDriver webDriver;
 
-    private static BasePage page;
+        private static BasePage page;
 
     @BeforeAll
 

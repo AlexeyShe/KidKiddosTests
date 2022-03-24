@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.io.IOException;
+import java.util.logging.Level;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MainPageTests extends UseCaseBase {
@@ -117,7 +120,7 @@ public class MainPageTests extends UseCaseBase {
     }
 
     @Test
-    public void openGallleryPageTest() {
+    public void openGalleryPageTest() {
         logger.info("opening Gallery page test");
         GalleryPage galleryPage = mainPage.openGalleryPage();
         boolean isLoaded = galleryPage.isPageVisible();
@@ -223,9 +226,22 @@ public class MainPageTests extends UseCaseBase {
     })
     public void selectCurrencyTest(String listNumber, String currency) throws InterruptedException {
         logger.info("checking currency options");
-        assertTrue(mainPage.selectCurrency("/html/body/ul[2]/li[" + listNumber + "]", "//span[@class = 'cbb-price-code' and text()='" + currency + "']"));
+        assertTrue(mainPage.selectCurrency(listNumber, currency));
         mainPage.takeScreenshot("currency " + currency);
         Thread.sleep(1000);
+    }
+
+    @Test
+
+    public void captureLogoImgTest() throws IOException {
+        logger.info("Capturing logo image");
+        mainPage.captureLogo();
+    }
+
+    @Test
+
+    public void logsNoSevereWarningsTest() {
+        assertNotEquals(Level.SEVERE, mainPage.severeWarnings());
     }
 }
 

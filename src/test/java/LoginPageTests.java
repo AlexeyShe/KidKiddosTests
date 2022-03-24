@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.logging.Level;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LoginPageTests extends UseCaseBase {
@@ -33,7 +35,7 @@ public class LoginPageTests extends UseCaseBase {
     @Test
     public void errorMessageVisible() {
         loginPage.loginButtonClick();
-        assertTrue(loginPage.isElementVisible(LoginPage.ERROR_SIGNIN_MESSAGE_XPATH) || loginPage.getCurrentURL().equals("https://kidkiddos.com/challenge"));
+        assertTrue(loginPage.isErrorSingIsVisible() || loginPage.getCurrentURL().equals("https://kidkiddos.com/challenge"));
     }
 
     @ParameterizedTest
@@ -49,8 +51,8 @@ public class LoginPageTests extends UseCaseBase {
 
     public void loginPageNegativeTests(String email, String password) {
         logger.info("Login page negative tests");
-        loginPage.sendKeys(LoginPage.EMAIL_FIELD_XPATH, email);
-        loginPage.sendKeys(LoginPage.PASSWORD_FIELD_XPATH, password);
+        loginPage.sendKeysEmail(email);
+        loginPage.sendKeysPassword(password);
         loginPage.loginButtonClick();
         assertEquals("https://kidkiddos.com/account/login", loginPage.getCurrentURL());
         loginPage.takeScreenshot("login_page_negative_test " + email + " " + password);
@@ -60,18 +62,18 @@ public class LoginPageTests extends UseCaseBase {
     @Test
     public void loginPagePositiveTest() {
         logger.info("login page positive tests");
-        loginPage.sendKeys(LoginPage.EMAIL_FIELD_XPATH, "alexbatanik@gmail.com");
-        loginPage.sendKeys(LoginPage.PASSWORD_FIELD_XPATH, "112233A");
+        loginPage.sendKeysEmail("alexbatanik@gmail.com");
+        loginPage.sendKeysPassword("112233A");
         loginPage.loginButtonClick();
         assertTrue(loginPage.getCurrentURL().equals("https://kidkiddos.com/account") || loginPage.getCurrentURL().equals("https://kidkiddos.com/challenge"));
-        loginPage.takeScreenshot("login_page_posistive_test");
+        loginPage.takeScreenshot("login_page_positive_test");
     }
 
     @Test
     public void forgotPasswordIsOpened() {
         logger.info("login page/ forgotten password test");
         assertTrue(loginPage.forgotPasswordIsOpen());
-        loginPage.takeScreenshot("frogotten_password");
+        loginPage.takeScreenshot("forgotten_password");
     }
 
     @Test
@@ -85,13 +87,13 @@ public class LoginPageTests extends UseCaseBase {
     public void takenEmailErrorMessage() {
         logger.info("taken email test");
         loginPage.openCreateAccPage();
-        loginPage.sendKeys(LoginPage.FIRST_NAME_XPATH, "aaaa");
-        loginPage.sendKeys(LoginPage.LAST_NAME_XPATH, "bbbb");
-        loginPage.sendKeys(LoginPage.EMAIL_CREATE_ACC_XPATH, "alexbatanik@gmail.com");
-        loginPage.sendKeys(LoginPage.PASSW_CREATE_ACC_XPATH, "password");
+        loginPage.sendKeysFirstName("aaaa");
+        loginPage.sendKeysLastName("bbbb");
+        loginPage.sendKeysNewEmail("alexbatanik@gmail.com");
+        loginPage.sendKeysNewPassword("password");
         loginPage.createAccBtnClick();
-        loginPage.takeScreenshot("teken_email_error_message");
-        assertTrue(loginPage.isElementVisible(LoginPage.EMAIL_IS_TAKEN_HEADER));
+        loginPage.takeScreenshot("taken_email_error_message");
+        assertTrue(loginPage.isEmailsIsTakenVisible());
     }
 
     @ParameterizedTest
@@ -104,14 +106,19 @@ public class LoginPageTests extends UseCaseBase {
     public void tooShortPasswordErrMsg(String password) {
         logger.info("short password test");
         loginPage.openCreateAccPage();
-        loginPage.sendKeys(LoginPage.FIRST_NAME_XPATH, "aaaa");
-        loginPage.sendKeys(LoginPage.LAST_NAME_XPATH, "bbbb");
-        loginPage.sendKeys(LoginPage.EMAIL_CREATE_ACC_XPATH, "aaa@gmail.com");
-        loginPage.sendKeys(LoginPage.PASSW_CREATE_ACC_XPATH, password);
+        loginPage.sendKeysFirstName("aaaa123");
+        loginPage.sendKeysLastName("bbbb122");
+        loginPage.sendKeysNewEmail("aaa@gmail.com");
+        loginPage.sendKeysNewPassword(password);
         loginPage.createAccBtnClick();
-
         loginPage.takeScreenshot("too_short_passw " + password);
-        assertTrue(loginPage.isElementVisible(LoginPage.TOO_SHORT_PASSWORD_ERR_MSG_XPATH));
+        assertTrue(loginPage.isErrTooShortPasswIsVisible());
+    }
+
+    @Test
+
+    public void noSevereMessagesTest() {
+        assertNotEquals(Level.SEVERE, loginPage.severeWarnings());
     }
 
 }

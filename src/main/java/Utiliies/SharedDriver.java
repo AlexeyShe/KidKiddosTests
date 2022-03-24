@@ -3,6 +3,7 @@ package Utiliies;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
@@ -26,7 +27,8 @@ public class SharedDriver {
 
             case CHROME:
                 WebDriverManager.chromedriver().setup();
-                webDriver = new ChromeDriver();
+                ChromeOptions options = new ChromeOptions();
+                webDriver = new ChromeDriver(options);
                 break;
             case FIREFOX:
                 WebDriverManager.firefoxdriver().setup();
