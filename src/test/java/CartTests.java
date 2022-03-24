@@ -25,7 +25,7 @@ public class CartTests extends UseCaseBase {
     public void addOneBookToCartTest() {
         yourCartPage.isCartEmpty();
         yourCartPage.addOneEngBookToCart();
-        assertEquals("1", yourCartPage.isCartEmpty());
+        assertEquals(yourCartPage.getCount().toString(), yourCartPage.isCartEmpty());
     }
 
     @Test
@@ -33,7 +33,7 @@ public class CartTests extends UseCaseBase {
     public void addMultipleEngBooksToCartTest() {
         yourCartPage.isCartEmpty();
         yourCartPage.addMultipleEngBookToCart();
-        assertEquals("3", yourCartPage.isCartEmpty());
+        assertEquals(yourCartPage.getCount().toString(), yourCartPage.isCartEmpty());
     }
 
     @Test

@@ -79,6 +79,7 @@ public class YourCartPage extends BasePage {
             this.takeScreenshot("Book " + i);
             wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(ADD_TO_CART_BTN_XPATH))).click();
             countBooks();
+
             logger.info("Book was added to Cart. Total added: " + getCount());
 
         }
