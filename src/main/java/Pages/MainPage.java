@@ -1,6 +1,22 @@
 package Pages;
 
 import Consts.Consts;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+
+import static org.openqa.selenium.support.locators.RelativeLocator.with;
+
 
 public class MainPage extends BasePage {
 
@@ -10,7 +26,6 @@ public class MainPage extends BasePage {
     private static final String EBOOKS_BY_LANGUAGE = "//a[@aria-controls='SiteNavLabel-ebooks-by-language']";
     private static final String BLOG_PAGE = "//a[text()='Blog']";
     private static final String CHINISE_LANG_PAGE = "//a[text()= '中文']";
-    public static final String ESPANOL_LANG_PAGE = "//a[text()= 'Español']";
     private static final String FAQ_PAGE = "//a[text()= 'FAQs']";
     private static final String FRANCAIS_LANG_PAGE = "//a[text()= 'Français']";
     private static final String GALLERY_PAGE = "//a[text()= 'Gallery']";
@@ -18,6 +33,8 @@ public class MainPage extends BasePage {
     private static final String RESOURCE_PAGE = "//a[@aria-controls= 'SiteNavLabel-resources']";
     private static final String GIFT_CARD_PAGE = "//a[text()= 'Gift Card']";
     private static final String YOUR_CART_PAGE_XPATH = "//a[@class='site-header__cart']";
+    private static final String LOG_IN_PAGE_XPATH = "//a[@class='site-header__account']";
+    public static final String ESPANOL_LANG_PAGE = "//a[text()= 'Español']";
 
 
     // Language List Options
@@ -91,12 +108,12 @@ public class MainPage extends BasePage {
     }
 
     public FaqPage openFaqPage() {
-        clickElementByXpath(FAQ_PAGE);
+        webDriver.findElement(with(By.xpath("//a")).toRightOf(findElementByXpath(RESOURCE_PAGE))).click();
         return new FaqPage();
     }
 
     public void openFrancaisPage() {
-        clickElementByXpath(FRANCAIS_LANG_PAGE);
+        webDriver.findElement(with(By.xpath("//a")).toRightOf(findElementByXpath(ESPANOL_LANG_PAGE))).click();
     }
 
     public LanguagePage openLanguagePage(String xpath) {
@@ -141,14 +158,40 @@ public class MainPage extends BasePage {
     }
 
     public void openYourCartPage() {
-        clickElementByXpath(YOUR_CART_PAGE_XPATH);
-
+        webDriver.findElement(with(By.xpath("//a")).near(findElementByXpath(LOG_IN_PAGE_XPATH))).click();
     }
 
     public boolean selectCurrency(String currencyXpath, String actualCurrency) {
         openEspanolPage();
-        clickElementByXpath(CURRENCY_CONVERTOR_XPATH);
-        clickElementByXpath(currencyXpath);
-        return elementExistsByXpath(actualCurrency);
+
+        wait.until(ExpectedConditions.presenceOfElementLocated(with(By.xpath("//span")).toRightOf(findElementByXpath(YOUR_CART_PAGE_XPATH)))).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("/html/body/ul[2]/li[" + currencyXpath + "]"))).click();
+
+       if(elementExistsByXpath("/html/body/ul[2]/li[" + currencyXpath + "]") && elementExistsByXpath("//span[@class = 'cbb-price-code' and text()='" + actualCurrency + "']")) {
+           return true;
+       }
+       return false;
+    }
+
+    public void captureLogo() throws IOException {
+
+        WebElement logoImg = findElementByXpath(LOGO_IMG);
+        File file = logoImg.getScreenshotAs(OutputType.FILE);
+        FileUtils.copyFile(file, new File("captured/logo.png"));
+    }
+
+    public Level severeWarnings() {
+        LogEntries entries = webDriver.manage().logs().get(LogType.BROWSER);
+        List<LogEntry> logs = entries.getAll();
+
+        for (LogEntry e : logs) {
+            if (e.getLevel() == Level.SEVERE) {
+                System.out.println("Message " + e.getMessage());
+                System.out.println("Level " + e.getLevel());
+                return e.getLevel();
+            }
+
+        }
+        return null;
     }
 }

@@ -1,6 +1,5 @@
 package Pages;
 
-import Utiliies.UseCaseBase;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -30,7 +29,7 @@ public class BasePage {
 
     public void setWebDriver(WebDriver webDriver) {
 
-        this.webDriver = webDriver;
+        BasePage.webDriver = webDriver;
         wait = new WebDriverWait(webDriver, 3);
     }
 
@@ -54,13 +53,18 @@ public class BasePage {
 
     protected boolean isElementVisible(String xpath) {
         try {
-            isElementVisible(xpath);
+            findElementByXpath(xpath);
             return true;
         } catch (Exception e) {
             return false;
         }
 
 
+    }
+
+    public void sendKeys(String xpath, String text) {
+
+        sendTextToElementByXpath(xpath, text);
     }
 
 
